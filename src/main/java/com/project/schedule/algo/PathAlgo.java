@@ -140,7 +140,7 @@ public class PathAlgo {
     {
         int pathLength = -1;
         if(end==null||maps==null) return pathLength;
-        System.out.println("总代价：" + end.G);
+//        System.out.println("总代价：" + end.G);
         while (end != null)
         {
             Coord c = end.coord;

@@ -4,26 +4,24 @@ import com.project.schedule.service.IPublisher;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class DropPlace extends Place implements IPublisher<Truck> {
-
-    public int bikeNums;
 
     public Queue<Bicycle> bicycleList = new LinkedList<>();
     // 订阅者集合
     private ArrayList events = new ArrayList<Truck>();
 
-    private int state = 0;
+    public int state = 0;
 
-    private int initialQuantity;
+    public int initialQuantity;
 
     public DropPlace(int x, int y, int bikeNums, String placeName) {
         Coord coord = new Coord(x, y);
         this.setPlaceLocation(coord);
         this.setPlaceName(placeName);
         this.initialQuantity = bikeNums;
-        this.bikeNums = bikeNums;
         for(int i=0;i<bikeNums;i++){
             Bicycle bicycle = new Bicycle("共享单车"+i,0);
             bicycleList.add(bicycle);
@@ -33,9 +31,20 @@ public class DropPlace extends Place implements IPublisher<Truck> {
     public Bicycle takeOut() {
         return bicycleList.poll();
     }
+    public List<Bicycle> takeOut(int nums){
+        List<Bicycle> ret = new ArrayList<>();
+        for(int i=0;i<nums;i++){
+            ret.add(bicycleList.poll());
+        }
+        return ret;
+    }
 
     public void putIn(Bicycle bicycle) {
         bicycleList.add(bicycle);
+    }
+
+    public void putIn(List<Bicycle> bicycle) {
+        bicycleList.addAll(bicycle);
     }
 
     @Override
@@ -61,4 +70,35 @@ public class DropPlace extends Place implements IPublisher<Truck> {
     }
 
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public Queue<Bicycle> getBicycleList() {
+        return bicycleList;
+    }
+
+    public void setBicycleList(Queue<Bicycle> bicycleList) {
+        this.bicycleList = bicycleList;
+    }
+
+    public ArrayList getEvents() {
+        return events;
+    }
+
+    public void setEvents(ArrayList events) {
+        this.events = events;
+    }
+
+    public int getInitialQuantity() {
+        return initialQuantity;
+    }
+
+    public void setInitialQuantity(int initialQuantity) {
+        this.initialQuantity = initialQuantity;
+    }
 }
