@@ -1,8 +1,8 @@
 package com.project.schedule.algo;
 
-import com.project.schedule.entity.Coord;
-import com.project.schedule.entity.MapInfo;
-import com.project.schedule.entity.Node;
+import com.project.schedule.entity.map.Coord;
+import com.project.schedule.entity.map.MapInfo;
+import com.project.schedule.entity.map.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +10,33 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class PathAlgo {
-    public final static int BAR = 1; // 障碍值
-    public final static int PATH = 2; // 路径
-    public final static int DIRECT_VALUE = 10; // 横竖移动代价
+    /**
+     * 障碍值
+     */
+    public final static int BAR = 1;
 
-    Queue<Node> openList = new PriorityQueue<Node>(); // 优先队列(升序)
+    /**
+     * 路径值
+     */
+    public final static int PATH = 2;
+
+    /**
+     * 横竖移动代价
+     */
+    public final static int DIRECT_VALUE = 10;
+
+    // 优先队列（升序）
+    Queue<Node> openList = new PriorityQueue<Node>();
+
+    // 以关闭节点列表
     List<Node> closeList = new ArrayList<Node>();
 
     /**
      * 判断结点是否是最终结点
+     *
+     * @param end 终点坐标
+     * @param coord 当前点坐标
+     * @return 是/否
      */
     private boolean isEndNode(Coord end, Coord coord)
     {
@@ -27,11 +45,16 @@ public class PathAlgo {
 
     /**
      * 判断结点能否放入Open列表
+     *
+     * @param mapInfo map信息
+     * @param x x坐标
+     * @param y y坐标
+     * @return 能：是/不能：否
      */
     private boolean canAddNodeToOpen(MapInfo mapInfo, int x, int y)
     {
         // 是否在地图中
-        if (x < 0 || x >= mapInfo.width || y < 0 || y >= mapInfo.hight) return false;
+        if (x < 0 || x >= mapInfo.width || y < 0 || y >= mapInfo.height) return false;
         // 判断是否是不可通过的结点
         if (mapInfo.maps[y][x] == BAR) return false;
         // 判断结点是否存在close表
@@ -42,6 +65,9 @@ public class PathAlgo {
 
     /**
      * 判断坐标是否在close表中
+     *
+     * @param coord 坐标点
+     * @return 是/否
      */
     private boolean isCoordInClose(Coord coord)
     {
@@ -50,6 +76,10 @@ public class PathAlgo {
 
     /**
      * 判断坐标是否在close表中
+     *
+     * @param x x坐标
+     * @param y y坐标
+     * @return 是/否
      */
     private boolean isCoordInClose(int x, int y)
     {
@@ -64,11 +94,24 @@ public class PathAlgo {
         return false;
     }
 
+    /**
+     * 计算代价估值
+     *
+     * @param end 终点
+     * @param coord 当前坐标点
+     * @return 估值H
+     */
     private int calcH(Coord end,Coord coord)
     {
         return Math.abs(end.x - coord.x) + Math.abs(end.y - coord.y);
     }
 
+    /**
+     * 域open列表中检索节点
+     *
+     * @param coord 坐标
+     * @return 节点
+     */
     private Node findNodeInOpen(Coord coord)
     {
         if (coord == null || openList.isEmpty()) return null;
@@ -84,6 +127,9 @@ public class PathAlgo {
 
     /**
      * 添加所有邻结点到open表
+     *
+     * @param mapInfo map信息
+     * @param current 当前节点
      */
     private void addNeighborNodeInOpen(MapInfo mapInfo,Node current)
     {
@@ -101,6 +147,12 @@ public class PathAlgo {
 
     /**
      * 添加一个邻结点到open表
+     *
+     * @param mapInfo 地图信息
+     * @param current 当前节点
+     * @param x 邻结点x
+     * @param y 邻结点y
+     * @param value 代价估值
      */
     private void addNeighborNodeInOpen(MapInfo mapInfo,Node current, int x, int y, int value)
     {
@@ -136,11 +188,17 @@ public class PathAlgo {
         }
     }
 
+    /**
+     * 绘制路径并返回路径长度
+     *
+     * @param maps map坐标矩阵
+     * @param end 终止节点
+     * @return 路径长度
+     */
     private int drawPath(int[][] maps, Node end)
     {
         int pathLength = -1;
         if(end==null||maps==null) return pathLength;
-//        System.out.println("总代价：" + end.G);
         while (end != null)
         {
             Coord c = end.coord;
@@ -152,6 +210,12 @@ public class PathAlgo {
     }
 
 
+    /**
+     * 开始根据地图信息绘制路径并接收路径长度
+     *
+     * @param mapInfo 地图信息
+     * @return 路径长度
+     */
     public int start(MapInfo mapInfo)
     {
         if(mapInfo==null) return -1;
@@ -164,7 +228,10 @@ public class PathAlgo {
     }
 
     /**
-     * 移动当前结点
+     * 移动节点计算路径
+     *
+     * @param mapInfo map信息
+     * @return 路径长度
      */
     private int moveNodes(MapInfo mapInfo)
     {

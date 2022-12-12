@@ -1,11 +1,16 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.transportation;
 
 import com.project.schedule.algo.PathAlgo;
-import com.project.schedule.service.ISubscriber;
+import com.project.schedule.entity.place.DropPlace;
+import com.project.schedule.entity.map.Coord;
+import com.project.schedule.entity.map.Map;
+import com.project.schedule.entity.map.MapInfo;
+import com.project.schedule.entity.map.Node;
+import com.project.schedule.service.intf.ISubscriber;
 
 import java.util.List;
 
-import static com.project.schedule.entity.OperatingTruck.putTruck;
+import static com.project.schedule.entity.transportation.OperatingTruck.putTruck;
 
 public class Truck extends Vehicle implements ISubscriber<DropPlace> {
 
@@ -24,23 +29,15 @@ public class Truck extends Vehicle implements ISubscriber<DropPlace> {
     }
 
     @Override
-    public void on(DropPlace dropPlace, String msg) {
-        System.out.println(msg);
-        int[][] maps = {
-                {0, 0, 0, 0, 1, 1, 1, 1},
-                {0, 1, 1, 0, 1, 1, 1, 1},
-                {0, 1, 1, 0, 0, 0, 0, 0},
-                {0, 1, 1, 1, 1, 1, 1, 0},
-                {0, 0, 0, 0, 0, 0, 1, 0},
-                {1, 1, 1, 1, 1, 0, 1, 0},
-                {1, 1, 1, 1, 1, 0, 0, 0},
-                {1, 1, 1, 1, 1, 1, 1, 0},
-        };
+    public void on(DropPlace dropPlace, Object msg) {
+        System.out.println(this.getTargetPlace().getPlaceName()+"请求调度");
+        Map map = (Map) msg;
+        // 计算货车从出发点->取货点->目的地的距离
         Node start = new Node(this.getTruckLocation().x,this.getTruckLocation().y);
         Node from = new Node(this.getFromPlace().getPlaceLocation().x,this.getFromPlace().getPlaceLocation().y);
         Node end = new Node(this.getTargetPlace().getPlaceLocation().x,this.getTargetPlace().getPlaceLocation().y);
-        MapInfo startToFrom = new MapInfo(maps,8,8,start,end);
-        MapInfo fromToEnd = new MapInfo(maps,8,8,from,end);
+        MapInfo startToFrom = new MapInfo(map.getMaps(),map.getWidth(),map.getHeight(),start,from);
+        MapInfo fromToEnd = new MapInfo(map.getMaps(),map.getWidth(),map.getHeight(),from,end);
         PathAlgo pathAlgo = new PathAlgo();
         int pathLength = pathAlgo.start(startToFrom) + pathAlgo.start(fromToEnd);
         this.setDistance(pathLength);

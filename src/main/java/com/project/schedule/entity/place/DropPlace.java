@@ -1,6 +1,9 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.place;
 
-import com.project.schedule.service.IPublisher;
+import com.project.schedule.entity.map.Coord;
+import com.project.schedule.entity.transportation.Bicycle;
+import com.project.schedule.entity.transportation.Truck;
+import com.project.schedule.service.intf.IPublisher;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,12 +12,16 @@ import java.util.Queue;
 
 public class DropPlace extends Place implements IPublisher<Truck> {
 
+    // 场地自行车数量
     public Queue<Bicycle> bicycleList = new LinkedList<>();
+
     // 订阅者集合
     private ArrayList events = new ArrayList<Truck>();
 
+    // 场地调度状态
     public int state = 0;
 
+    // 自行车初始容量
     public int initialQuantity;
 
     public DropPlace(int x, int y, int bikeNums, String placeName) {
@@ -28,9 +35,21 @@ public class DropPlace extends Place implements IPublisher<Truck> {
         }
     }
 
+    /**
+     * 取出自行车
+     *
+     * @return 自行车
+     */
     public Bicycle takeOut() {
         return bicycleList.poll();
     }
+
+    /**
+     * 批量取出自行车
+     *
+     * @param nums 数量
+     * @return 自行车列表
+     */
     public List<Bicycle> takeOut(int nums){
         List<Bicycle> ret = new ArrayList<>();
         for(int i=0;i<nums;i++){
@@ -39,12 +58,22 @@ public class DropPlace extends Place implements IPublisher<Truck> {
         return ret;
     }
 
+    /**
+     * 放回自行车
+     *
+     * @param bicycle 自行车
+     */
     public void putIn(Bicycle bicycle) {
         bicycleList.add(bicycle);
     }
 
-    public void putIn(List<Bicycle> bicycle) {
-        bicycleList.addAll(bicycle);
+    /**
+     * 批量放入自行车
+     *
+     * @param bicycles 自行车列表
+     */
+    public void putIn(List<Bicycle> bicycles) {
+        bicycleList.addAll(bicycles);
     }
 
     @Override
@@ -55,8 +84,8 @@ public class DropPlace extends Place implements IPublisher<Truck> {
 
 
     @Override
-    public void on(String msg) {
-        // 触发订阅的原理就是遍历该集合，然后将消息发送给集合中的每一个订阅者
+    public void on(Object msg) {
+        // 将消息发送给集合中的每一个订阅者
         for (int i = 0; i < events.size(); i++) {
             Truck subscriber = (Truck) events.get(i);
             subscriber.on(this, msg);

@@ -1,4 +1,4 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.place;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,10 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.map;
 
 public class Coord {
+    // x坐标
     public int x;
+
+    // y坐标
     public int y;
 
     public Coord(int x, int y)

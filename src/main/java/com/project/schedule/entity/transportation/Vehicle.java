@@ -1,7 +1,10 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.transportation;
 
 public class Vehicle {
+    // 交通工具名称
     public String name;
+
+    // 交通工具速率
     public int velocity;
 
     public String getName() {

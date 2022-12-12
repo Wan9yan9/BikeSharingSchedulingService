@@ -1,9 +1,17 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.transportation;
 
-public class Bicycle extends Vehicle{
+import com.project.schedule.entity.place.DropPlace;
+
+public class Bicycle extends Vehicle {
+    // 状态
     public int state;
+
+    // 距离
     public int distance;
+
+    // 目标场地
     public DropPlace targetPlace;
+
     public Bicycle(String name,int state){
         this.name = name;
         this.state = 0;

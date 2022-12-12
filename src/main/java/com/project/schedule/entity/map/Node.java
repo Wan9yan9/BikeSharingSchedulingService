@@ -1,12 +1,18 @@
-package com.project.schedule.entity;
+package com.project.schedule.entity.map;
 
 public class Node implements Comparable<Node>
 {
+    // 坐标
+    public Coord coord;
 
-    public Coord coord; // 坐标
-    public Node parent; // 父结点
-    public int G; // G：是个准确的值，是起点到当前结点的代价
-    public int H; // H：是个估值，当前结点到目的结点的估计代价
+    // 父结点
+    public Node parent;
+
+    // G：是个准确的值，是起点到当前结点的代价
+    public int G;
+
+    // H：是个估值，当前结点到目的结点的估计代价
+    public int H;
 
     public Node(int x, int y)
     {
